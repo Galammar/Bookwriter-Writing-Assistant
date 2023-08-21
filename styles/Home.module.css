@@ -1,0 +1,13 @@
+.name {
+  text-decoration: underline;
+  color: blue;
+}
+
+.description {
+  position: absolute;
+  display: none;
+}
+
+.name:hover + span {
+  display: block;
+}

@@ -3,10 +3,6 @@ import styles from '../styles/Home.module.css';
 import { useState } from 'react';
 
 export default function Home() {
-  const [characters, setCharacters] = useState([]);
-  const [newName, setNewName] = useState('');
-  const [newDescription, setNewDescription] = useState('');
-
   class Character {
     name;
     description;
@@ -15,6 +11,31 @@ export default function Home() {
       this.name = name;
       this.description = description;
     }
+  }
+
+  const [characters, setCharacters] = useState([]);
+
+  const [newName, setNewName] = useState('');
+
+  const [newDescription, setNewDescription] = useState('');
+
+  function Name({ character }) {
+    return (
+      <span>
+        {'['} <span className={styles.name}>{character.name}</span> {']'}
+        <span className={styles.description}>{character.description}</span>
+      </span>
+    );
+  }
+
+  function TableOfNames() {
+    return (
+      <div>
+        {characters.map((character, index) => (
+          <Name character={character} key={index} />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -49,10 +70,12 @@ export default function Home() {
             } else {
               alert('First enter a name for your character!');
             }
+            console.log(characters);
           }}
         >
           {'Save >'}
         </button>
+        <TableOfNames />
       </main>
     </div>
   );
