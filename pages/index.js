@@ -13,11 +13,34 @@ export default function Home() {
     }
   }
 
+  class Chapter {
+    title;
+    id;
+    notes;
+    content = '';
+
+    constructor(title, notes) {
+      this.title = title;
+      this.id = chapters.length;
+      this.notes = notes;
+    }
+  }
+
   const [characters, setCharacters] = useState([]);
 
   const [newName, setNewName] = useState('');
 
   const [newDescription, setNewDescription] = useState('');
+
+  const [chapters, setChapters] = useState([]);
+
+  const [newTitle, setNewTitle] = useState('');
+
+  const [newNotes, setNewNotes] = useState('');
+
+  const [currentID, setCurrentID] = useState(Number);
+
+  const [currentChapter, setCurrentChapter] = useState('');
 
   function Name({ character }) {
     return (
@@ -31,11 +54,40 @@ export default function Home() {
     );
   }
 
+  function Title({ chapter }) {
+    return (
+      <span>
+        {'['}{' '}
+        <span
+          className={styles.name}
+          onClick={() => setCurrentChapter(chapters[chapter.id].content)}
+        >
+          {chapter.title}
+        </span>{' '}
+        {']'}
+        <span
+          className={styles.description}
+          dangerouslySetInnerHTML={{ __html: chapter.notes }}
+        ></span>
+      </span>
+    );
+  }
+
   function TableOfNames() {
     return (
-      <div className={styles.tableOfNames}>
+      <div className={styles.table}>
         {characters.map((character, index) => (
           <Name character={character} key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  function TableOfChapters() {
+    return (
+      <div className={styles.table}>
+        {chapters.map((chapter, index) => (
+          <Title chapter={chapter} key={index} />
         ))}
       </div>
     );
@@ -53,8 +105,8 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <div className={styles.leftSideBar}>
-          <div className={styles.textedDivider}>Create new character:</div>
+        <div className={styles.sideBar}>
+          <div className={styles.topTextedDivider}>Create new character:</div>
           <input
             type="text"
             id="name"
@@ -65,7 +117,7 @@ export default function Home() {
           <br />
           <textarea
             id="description"
-            className={styles.textareaDescription}
+            className={styles.textarea}
             placeholder={
               'Description appears when hovering over the character`s name'
             }
@@ -98,10 +150,51 @@ export default function Home() {
             name="editor"
             id="editor"
             className={styles.editor}
+            value={chapters[currentID].content}
+            onChange={(e) => {
+              chapters[currentID].content = e.target.value;
+            }}
           ></textarea>
+          <button>{'Save >'}</button>
         </div>
 
-        <div className={styles.rightSideBar}></div>
+        <div className={styles.sideBar}>
+          <div className={styles.topTextedDivider}>Create new chapter:</div>
+          <input
+            type="text"
+            id="title"
+            value={newTitle}
+            placeholder={'Title'}
+            onChange={(e) => setNewTitle(e.target.value)}
+          />
+          <br />
+          <textarea
+            id="notes"
+            className={styles.textarea}
+            placeholder={'Notes appear when hovering over the chapter`s name'}
+            value={newNotes}
+            onChange={(e) => setNewNotes(e.target.value)}
+          ></textarea>
+          <br />
+          <button
+            onClick={() => {
+              if (!newTitle == '') {
+                setChapters(
+                  chapters,
+                  chapters.push(new Chapter(newTitle, newNotes))
+                );
+              } else {
+                alert('First enter a title for your chapter!');
+              }
+              setNewTitle('');
+              setNewNotes('');
+            }}
+          >
+            {'Save >'}
+          </button>
+          <div className={styles.textedDivider}>Chapters:</div>
+          <TableOfChapters />
+        </div>
       </main>
     </div>
   );
